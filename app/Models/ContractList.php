@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ContractList extends Model
 {
-    use HasUuids;
+    use HasUuids, HasFactory;
 
     public function products(): BelongsTo
     {

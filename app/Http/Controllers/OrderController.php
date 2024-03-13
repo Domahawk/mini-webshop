@@ -2,48 +2,30 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\BadRequestExceptions\UnsupportedProductException;
 use App\Http\Requests\StoreOrderRequest;
-use App\Http\Requests\UpdateOrderRequest;
 use App\Models\Order;
+use App\Services\OrderService;
 
 class OrderController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
+    public function __construct(
+        private readonly OrderService $orderService
+    ) {}
 
     /**
-     * Store a newly created resource in storage.
+     * @throws UnsupportedProductException
      */
     public function store(StoreOrderRequest $request)
     {
-        //
+        $data = $request->validated();
+
+        $order = $this->orderService->createOrder($data);
+
+        return $order;
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Order $order)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateOrderRequest $request, Order $order)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Order $order)
     {
         //
     }

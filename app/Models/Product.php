@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Builders\ProductBuilder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -19,12 +20,19 @@ class Product extends Model
             'category_product',
             'product_id',
             'category_id',
-        );
+        )->withTimestamps();
     }
 
-    public function priceLists(): HasMany
+    public function priceLists(): BelongsToMany
     {
-        return $this->hasMany(PriceList::class, 'SKU', 'SKU');
+        return $this->belongsToMany(
+            PriceList::class,
+            'price_list_product',
+            'sku',
+            'price_list_id',
+        )->using(PriceListProduct::class)
+            ->withPivot(['price'])
+            ->withTimestamps();
     }
 
     public function contractLists(): HasMany
@@ -39,6 +47,13 @@ class Product extends Model
             'order_product',
             'product_id',
             'order_id'
-        )->using(OrderProduct::class);
+        )->using(OrderProduct::class)
+            ->withPivot(['amount', 'price'])
+            ->withTimestamps();
+    }
+
+    public function newEloquentBuilder($query): ProductBuilder
+    {
+        return new ProductBuilder($query);
     }
 }

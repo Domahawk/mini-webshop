@@ -6,10 +6,18 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Order extends Model
 {
     use HasUuids;
+
+    protected $fillable = [
+        'total',
+        'vat',
+        'total_vat',
+        'user_id',
+    ];
 
     public function user(): BelongsTo
     {
@@ -20,22 +28,22 @@ class Order extends Model
     {
         return $this->belongsToMany(
             Product::class,
-            'order_products',
+            'order_product',
             'order_id',
             'product_id'
         )
             ->using(OrderProduct::class)
+            ->withPivot(['amount', 'price'])
             ->withTimestamps();
     }
 
-    public function priceModifiers(): BelongsToMany
+    public function priceModifiers(): HasMany
     {
-        return $this->belongsToMany(
-            PriceModifier::class,
-            'order_price_modifier',
-            'order_id',
-            'price_modifier_id'
-        )
-            ->using(OrderPriceModifier::class);
+        return $this->hasMany(OrderPriceModifier::class, 'order_id', 'id');
+    }
+
+    public function orderProducts(): HasMany
+    {
+        return $this->hasMany(OrderProduct::class, 'order_id', 'id');
     }
 }

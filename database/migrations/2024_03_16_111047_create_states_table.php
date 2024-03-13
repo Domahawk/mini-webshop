@@ -11,11 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('order_price_modifier', function (Blueprint $table) {
+        Schema::create('states', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('order_id')->references('id')->on('orders');
-            $table->foreignUuid('price_modifier_id')->references('id')->on('price_modifiers');
-            $table->timestamps();
+            $table->char('country_code');
+            $table->string('name');
+            $table->tinyInteger('vat');
+
+            $table->foreign('country_code')->references('code')->on('countries');
         });
     }
 
@@ -24,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('order_price_modifier');
+        Schema::dropIfExists('states');
     }
 };

@@ -17,12 +17,6 @@ return new class extends Migration
             $table->decimal('vat', 13);
             $table->decimal('total_vat', 13);
             $table->foreignUuid('user_id')->references('id')->on('users');
-            $table->string('name')->nullable();
-            $table->string('email')->nullable();
-            $table->string('tel')->nullable();
-            $table->string('address')->nullable();
-            $table->string('city')->nullable();
-            $table->string('country')->nullable();
             $table->timestamps();
         });
     }

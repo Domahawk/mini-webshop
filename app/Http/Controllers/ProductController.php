@@ -2,46 +2,50 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreProductRequest;
-use App\Http\Requests\UpdateProductRequest;
-use App\Models\Category;
+use App\Exceptions\BadRequestExceptions\IncorrectFilterTypeException;
+use App\Exceptions\BadRequestExceptions\IncorrectSortException;
 use App\Models\Product;
+use App\Services\ProductFilterSortService;
+use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Request;
 
 class ProductController extends Controller
 {
+    public function __construct(
+        private readonly ProductFilterSortService $filterSortService,
+    ) {}
+
+    public function index(): LengthAwarePaginator
+    {
+        return Product::query()->productsByLoggedInUser()->paginate(5);
+    }
+
     /**
-     * Display a listing of the resource.
+     * @throws IncorrectFilterTypeException
+     * @throws IncorrectSortException
      */
-    public function index(Request $request): LengthAwarePaginator
-    {
-        return Product::query()->paginate(5);
-    }
-
-    public function categoryProducts(Request $request, Category $category): LengthAwarePaginator
-    {
-        return $category->products()->paginate(5);
-    }
-
     public function filterProducts(Request $request): array
     {
-        return [];
+        $query = Product::query()->productsByLoggedInUser();
+        $this->filterSortService->applyFilters($request->query->all('filter'), $query);
+        $this->filterSortService->applySorts($request->query->all('sort'), $query);
+
+        return $query->get()->toArray();
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreProductRequest $request)
+    public function show(Product $product): array
     {
-        //
-    }
+        $userProduct = Product::query()
+            ->productsByLoggedInUser()
+            ->where('product.id', '=', $product->id)
+            ->get();
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Product $product)
-    {
-        return $product;
+        if ($userProduct->isEmpty()) {
+            return [
+                'message' => 'No products with that id'
+            ];
+        }
+
+        return $userProduct->first()->load(['categories'])->toArray();
     }
 }

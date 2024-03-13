@@ -2,12 +2,13 @@
 
 namespace Database\Factories;
 
+use App\Models\PriceList;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\PriceModifier>
+ * @extends Factory<PriceList>
  */
-class PriceModifierFactory extends Factory
+class PriceListFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -17,7 +18,8 @@ class PriceModifierFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => $this->faker->colorName,
+            'description' => $this->faker->text,
         ];
     }
 }

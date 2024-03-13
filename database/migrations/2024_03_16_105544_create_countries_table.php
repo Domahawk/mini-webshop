@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('price_modifiers', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+        Schema::create('countries', function (Blueprint $table) {
+            $table->char('code', 2)->primary();
             $table->string('name');
-            $table->string('amount', 10);
-            $table->string('type');
+            $table->tinyInteger('vat');
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('price_modifiers');
+        Schema::dropIfExists('countries');
     }
 };

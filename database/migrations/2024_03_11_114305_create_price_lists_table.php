@@ -14,9 +14,7 @@ return new class extends Migration
         Schema::create('price_lists', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name');
-            $table->decimal('price');
-            $table->char('sku', 12);
-            $table->foreign('sku')->references('sku')->on('products');
+            $table->string('description');
             $table->timestamps();
         });
     }

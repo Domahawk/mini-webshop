@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\AuthenticationController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -15,10 +18,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::post('/login', [AuthenticationController::class, 'login']);
 
-Route::get('/products', [ProductController::class, 'index']);
-Route::get('/products/categories/{category}', [ProductController::class, 'categoryProducts']);
-Route::get('/products/filter', [ProductController::class, 'filterProducts']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/products', [ProductController::class, 'index']);
+    Route::get('/products/filter', [ProductController::class, 'filterProducts']);
+    Route::get('/products/{product}', [ProductController::class, 'show']);
+
+    Route::get('/categories/{category}/products', [CategoryController::class, 'showCategoryProducts']);
+
+    Route::get('/logout', [AuthenticationController::class, 'logout']);
+
+    Route::post('/orders', [OrderController::class, 'store']);
+});

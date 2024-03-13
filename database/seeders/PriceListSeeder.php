@@ -2,16 +2,24 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\PriceList;
 use Illuminate\Database\Seeder;
 
 class PriceListSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+    private const PRICE_LISTS = [
+        'RETAIL' => 'Retail customers',
+        'WHOLESALE' => 'Wholesale customers'
+    ];
+
     public function run(): void
     {
-        //
+        foreach (self::PRICE_LISTS as $name => $description) {
+            PriceList::factory()->create([
+                'name' => $name,
+                'description' => $description,
+            ]);
+        }
+
     }
 }
