@@ -3,6 +3,8 @@
 namespace Database\Factories;
 
 use App\Models\Address;
+use App\Models\Country;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -21,8 +23,9 @@ class AddressFactory extends Factory
             'street' => $this->faker->streetAddress,
             'city' => 'Zagreb',
             'postal_code' => 10000,
-            'country_code' => 'HR',
+            'country_code' => Country::factory()->create()->code,
             'state_id' => null,
+            'user_id' => User::factory()->create(),
         ];
     }
 }

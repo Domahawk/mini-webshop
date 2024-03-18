@@ -19,7 +19,7 @@ unzip
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+RUN docker-php-ext-install mysqli pdo pdo_mysql mbstring exif pcntl bcmath gd
 RUN pecl install xdebug && docker-php-ext-enable xdebug
 
 RUN echo "xdebug.mode=develop,debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \

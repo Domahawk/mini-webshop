@@ -14,6 +14,8 @@ class Country extends Model
 
     protected $keyType = 'string';
 
+    public $incrementing = false;
+
     public function states(): HasMany
     {
         return $this->hasMany(State::class, 'country_code', 'code');

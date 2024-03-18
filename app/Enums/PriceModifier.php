@@ -44,6 +44,12 @@ enum PriceModifier: string implements CanBeUndefined
         return $this === self::VAT;
     }
 
+    public function isLargeOrderDiscount(): bool
+    {
+        return $this === self::LARGE_ORDER_DISCOUNT;
+    }
+
+
     public function isApplicableByUser(): bool
     {
         return $this !== self::VAT || $this !== self::LARGE_ORDER_DISCOUNT;
