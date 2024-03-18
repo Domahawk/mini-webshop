@@ -24,13 +24,6 @@ class ProductBuilder extends Builder
             ->where('users.id', '=', Auth::id());
     }
 
-    public function productsBySelectedCategory(Category $category): self
-    {
-        return $this
-            ->join('category_product', 'products.id', '=', 'category_product.product_id')
-            ->whereIn('category_product.category_id', $this->getAllCategoryChildrenIds($category));
-    }
-
     public function filterByCategory(string $value): self
     {
         return $this->join(
@@ -40,21 +33,18 @@ class ProductBuilder extends Builder
             'products.id'
         )
             ->join('categories','category_product.category_id','=','categories.id')
-            ->join('categories as parent_categories','categories.parent_id','=','parent_categories.id')
+            ->leftJoin('categories as parent_categories','categories.parent_id','=','parent_categories.id')
             ->where(function (Builder $query) use ($value) {
                 $query->where('categories.name', 'like', "%$value%")
                     ->orWhere('parent_categories.name', 'like', "%$value%");
             });
     }
 
-    public function sortByName(string $value): self
+    public function productsBySelectedCategory(Category $category): self
     {
-        return $this->orderBy('name', $value);
-    }
-
-    public function sortByPrice(string $value): self
-    {
-        return $this->orderBy('price', $value);
+        return $this
+            ->join('category_product', 'products.id', '=', 'category_product.product_id')
+            ->whereIn('category_product.category_id', $this->getAllCategoryChildrenIds($category));
     }
 
     private function getAllCategoryChildrenIds(Category $category): array

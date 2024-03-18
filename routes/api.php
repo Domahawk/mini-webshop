@@ -21,9 +21,9 @@ use Illuminate\Support\Facades\Route;
 Route::post('/login', [AuthenticationController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/products', [ProductController::class, 'index']);
+    Route::get('/products', [ProductController::class, 'index'])->middleware('validate.perPage');
     Route::get('/products/filter', [ProductController::class, 'filterProducts']);
-    Route::get('/products/{product}', [ProductController::class, 'show']);
+    Route::get('/products/{product}', [ProductController::class, 'show'])->middleware('validate.perPage');
 
     Route::get('/categories/{category}/products', [CategoryController::class, 'showCategoryProducts']);
 

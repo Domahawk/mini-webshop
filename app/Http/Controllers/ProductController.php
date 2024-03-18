@@ -15,9 +15,11 @@ class ProductController extends Controller
         private readonly ProductFilterSortService $filterSortService,
     ) {}
 
-    public function index(): LengthAwarePaginator
+    public function index(Request $request): LengthAwarePaginator
     {
-        return Product::query()->productsByLoggedInUser()->paginate(5);
+        $perPage = $request->query->get('perPage');
+
+        return Product::query()->productsByLoggedInUser()->paginate($perPage);
     }
 
     /**
@@ -30,15 +32,16 @@ class ProductController extends Controller
         $this->filterSortService->applyFilters($request->query->all('filter'), $query);
         $this->filterSortService->applySorts($request->query->all('sort'), $query);
 
-        return $query->get()->toArray();
+        return $query->with('categories')->get()->toArray();
     }
 
     public function show(Product $product): array
     {
         $userProduct = Product::query()
             ->productsByLoggedInUser()
-            ->where('product.id', '=', $product->id)
-            ->get();
+            ->where('products.id', '=', $product->id)
+            ->get()
+        ;
 
         if ($userProduct->isEmpty()) {
             return [
